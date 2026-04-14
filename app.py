@@ -5,7 +5,6 @@ from datetime import datetime
 app = Flask(__name__)
 CORS(app)
 
-# ✅ Hardcoded Data (2 Students)
 data = {
     "students": [
         {
@@ -47,7 +46,6 @@ data = {
     ]
 }
 
-# ✅ LOGIN API
 @app.route('/api/login', methods=['POST'])
 def login():
     try:
@@ -55,7 +53,7 @@ def login():
         roll_no = req_data.get('roll_no', '').strip().upper()
         dob = req_data.get('dob', '').strip()
 
-        student = next((s for s in data['students'] if s['roll_no'] == roll_no), None)
+        student = next((s for s in data['students'] if s['roll_no'] == roll_no), None) 
 
         if not student:
             return jsonify({
@@ -69,12 +67,10 @@ def login():
                 'message': 'Invalid Date of Birth'
             }), 401
 
-        # ✅ Calculate overall attendance
         total_attended = sum(att['attended'] for att in student['attendance'].values())
         total_classes = sum(att['total_classes'] for att in student['attendance'].values())
         overall_percentage = round((total_attended / total_classes) * 100, 2) if total_classes > 0 else 0
 
-        # ✅ Subjects below 75%
         low_attendance_subjects = [
             {
                 'code': code,
@@ -112,7 +108,6 @@ def login():
         }), 500
 
 
-# ✅ GET ATTENDANCE
 @app.route('/api/student/<roll_no>/attendance', methods=['GET'])
 def get_attendance(roll_no):
     student = next((s for s in data['students'] if s['roll_no'] == roll_no.upper()), None)
@@ -125,8 +120,6 @@ def get_attendance(roll_no):
         'attendance': student['attendance']
     })
 
-
-# ✅ GET SUBJECTS
 @app.route('/api/subjects', methods=['GET'])
 def get_subjects():
     return jsonify({
@@ -134,8 +127,6 @@ def get_subjects():
         'subjects': data['subjects']
     })
 
-
-# ✅ HEALTH CHECK
 @app.route('/api/health', methods=['GET'])
 def health_check():
     return jsonify({
@@ -144,8 +135,6 @@ def health_check():
         'total_students': len(data['students'])
     })
 
-
-# ✅ RUN SERVER
 if __name__ == '__main__':
     print("Server running at: http://localhost:5000")
     app.run(host='0.0.0.0', port=5000, debug=True)

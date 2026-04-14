@@ -5,3 +5,4 @@ numpy==1.24.4
 gunicorn==21.2.0
 requests
 flask-cors
+setuptools
